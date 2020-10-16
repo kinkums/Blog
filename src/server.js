@@ -4,22 +4,28 @@ import { MongoClient } from 'mongodb';
 import path from 'path';
 
 const app = express();
-const port = 7000;
+const port = process.env.PORT || 7000;
 
 app.use(bodyParser.json());
 //app.use(express.static(path.join(__dirname, '/build')))
 app.use(express.static(path.join(__dirname, '/build')))
-if (process.env.NODE_ENV === 'production') {
+/*if (process.env.NODE_ENV === 'production') {
     app.get(/^((?!(api)).)*$/, (req, res) => {
      //   res.sendFile(path.join(__dirname, 'client/build', 'index.html' ))
         res.sendFile(path.join(__dirname, 'index.html' ))
     })
+}*/
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '/build')));
+    app.get(/^((?!(api)).)*$/, (req, res) => {
+        res.sendFile(path.join(__dirname, 'src', 'build', 'index.html'));
+    });
 }
 
-
 const start = async() => {
-    //const client = await MongoClient.connect('mongodb://127.0.0.1:27017/',{ useNewUrlParser : true, useUnifiedTopology : true}, );
-    const client = await MongoClient.connect('mongodb+srv://mongoUser:mongoPassword@Cluster0.skner.mongodb.net/blog-db?retryWrites=true&w=majority',{ useNewUrlParser : true, useUnifiedTopology : true},);
+    const client = await MongoClient.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/',{ useNewUrlParser : true, useUnifiedTopology : true}, );
+    //const client = await MongoClient.connect('mongodb+srv://mongoUser:mongoPassword@Cluster0.skner.mongodb.net/blog-db?retryWrites=true&w=majority',{ useNewUrlParser : true, useUnifiedTopology : true},);
     const db = client.db('blog-db');
 
     app.get('/api/articles/:name', async (req,res) => {
@@ -48,7 +54,7 @@ const start = async() => {
         res.sendFile(path.join(__dirname, '/build/index.html'));
     })
 
-    app.listen(process.env.PORT || port, () => console.log(`Server is listening at port ${port}`));
+    app.listen(port, () => console.log(`Server is listening at port ${port}`));
 }
 
 start();
