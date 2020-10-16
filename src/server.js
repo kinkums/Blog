@@ -7,7 +7,14 @@ const app = express();
 const port = 7000;
 
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, '/build')))
+//app.use(express.static(path.join(__dirname, '/build')))
+app.use(express.static(path.join(__dirname, 'client', 'build')))
+if (process.env.NODE_ENV === 'production') {
+    app.get(/^((?!(api)).)*$/, (req, res) => {
+        res.sendFile(path.join(__dirname, 'client/build', 'index.html' ))
+    })
+}
+
 
 const start = async() => {
     //const client = await MongoClient.connect('mongodb://127.0.0.1:27017/',{ useNewUrlParser : true, useUnifiedTopology : true}, );
@@ -40,7 +47,7 @@ const start = async() => {
         res.sendFile(path.join(__dirname, '/build/index.html'));
     })
 
-    app.listen(port, () => console.log(`Server is listening at port ${port}`));
+    app.listen(process.env.PORT || port, () => console.log(`Server is listening at port ${port}`));
 }
 
 start();
