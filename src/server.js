@@ -10,7 +10,8 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '/build')))
 
 const start = async() => {
-    const client = await MongoClient.connect('mongodb://127.0.0.1:27017/',{ useNewUrlParser : true, useUnifiedTopology : true}, );
+    //const client = await MongoClient.connect('mongodb://127.0.0.1:27017/',{ useNewUrlParser : true, useUnifiedTopology : true}, );
+    const client = await MongoClient.connect('mongodb+srv://mongoUser:mongoPassword@Cluster0.skner.mongodb.net/blog-db?retryWrites=true&w=majority',{ useNewUrlParser : true, useUnifiedTopology : true},);
     const db = client.db('blog-db');
 
     app.get('/api/articles/:name', async (req,res) => {
