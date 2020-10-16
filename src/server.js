@@ -8,10 +8,11 @@ const port = 7000;
 
 app.use(bodyParser.json());
 //app.use(express.static(path.join(__dirname, '/build')))
-app.use(express.static(path.join(__dirname, 'client', 'build')))
+app.use(express.static(path.join(__dirname, '/build')))
 if (process.env.NODE_ENV === 'production') {
     app.get(/^((?!(api)).)*$/, (req, res) => {
-        res.sendFile(path.join(__dirname, 'client/build', 'index.html' ))
+     //   res.sendFile(path.join(__dirname, 'client/build', 'index.html' ))
+        res.sendFile(path.join(__dirname, 'index.html' ))
     })
 }
 
